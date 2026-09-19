@@ -428,7 +428,7 @@ a {
 .doc-title__logo {
   width: min(52vw, 46rem);
   height: auto;
-  mix-blend-mode: screen;
+  background: transparent;
 }
 
 .doc-title--intermission .doc-title__logo {
