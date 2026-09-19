@@ -204,6 +204,7 @@ export class ScreeningApp {
       img.src = image.src;
       img.alt = CONFIG.documentaryTitle;
       img.hidden = false;
+      img.style.background = "transparent";
     });
     this.toggleTitleLogo(true);
   }

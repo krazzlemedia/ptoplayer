@@ -47,7 +47,7 @@ export const CONFIG = {
 
   showTitleLogo: true,
 
-  titleLogoPath: "./assets/title-logo.png",
+  titleLogoPath: "./assets/promise-title.png",
 
   donation: {
     enabled: true,

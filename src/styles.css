@@ -423,12 +423,15 @@ a {
   align-items: center;
   margin: 0;
   line-height: 0.92;
+  background: transparent;
 }
 
 .doc-title__logo {
   width: min(52vw, 46rem);
   height: auto;
-  background: transparent;
+  background: none !important;
+  background-color: transparent !important;
+  mix-blend-mode: lighten;
 }
 
 .doc-title--intermission .doc-title__logo {
