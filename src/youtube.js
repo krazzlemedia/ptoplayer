@@ -179,7 +179,7 @@ export function createYouTubeController({
     iframe.setAttribute("allowfullscreen", "true");
     iframe.setAttribute("title", "Documentary screening");
     iframe.setAttribute("tabindex", "-1");
-    iframe.style.pointerEvents = "none";
+    iframe.style.pointerEvents = "auto";
   }
 
   function safeCall(methodName, ...args) {
@@ -230,6 +230,12 @@ export function createYouTubeController({
     },
     isReady() {
       return ready && !destroyed;
+    },
+    setInteractive(enabled) {
+      const iframe = getIframe();
+      if (iframe) {
+        iframe.style.pointerEvents = enabled ? "auto" : "none";
+      }
     },
     destroy() {
       destroyed = true;

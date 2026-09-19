@@ -45,9 +45,13 @@ export const CONFIG = {
 
   logoPath: "./assets/logo.png",
 
+  showTitleLogo: true,
+
+  titleLogoPath: "./assets/title-logo.png",
+
   donation: {
     enabled: true,
-    url: "https://example.org/donate",
+    url: "https://givebutter.com/2026PearlGala_40Years",
     qrCodeImage: "./assets/donation-qr.png",
     headline: "Support The Promise",
     description:

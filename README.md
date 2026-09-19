@@ -134,7 +134,8 @@ All installation settings live in `src/config.js`.
 | `showCountdownSeconds` | Show `05:00` style seconds |
 | `fullscreenButton` | Discreet fullscreen control |
 | `showPlaybackWatermark` | Optional faint playback label |
-| `showLogo` / `logoPath` | Optional artwork |
+| `showLogo` / `logoPath` | Optional chapter artwork |
+| `showTitleLogo` / `titleLogoPath` | Film title lockup |
 | `donation.enabled` | Show or hide the support card |
 | `donation.url` | Contribution link |
 | `donation.qrCodeImage` | Optional custom QR image |

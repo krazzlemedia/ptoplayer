@@ -66,7 +66,11 @@ export class ScreeningApp {
     this.setState(STATES.LAUNCH);
     this.updateFullscreenButton();
     void this.preloadPlayer();
-    await Promise.all([this.prepareLogo(), this.prepareDonationCard()]);
+    await Promise.all([
+      this.prepareLogo(),
+      this.prepareTitleLogo(),
+      this.prepareDonationCard()
+    ]);
     this.applyPreviewMode();
   }
 
@@ -92,12 +96,14 @@ export class ScreeningApp {
       continueCopy: document.getElementById("continue-copy"),
       imminentCopy: document.getElementById("imminent-copy"),
       watermark: document.getElementById("playback-watermark"),
+      screeningStatus: document.getElementById("screening-status"),
       playerHost: document.getElementById("player-host"),
       supportCard: document.getElementById("support-card"),
       tagline: document.getElementById("tagline"),
       stoneLegend: document.getElementById("stone-legend"),
       logos: Array.from(document.querySelectorAll("[data-logo]")),
-      logoFallbacks: Array.from(document.querySelectorAll("[data-logo-fallback]"))
+      logoFallbacks: Array.from(document.querySelectorAll("[data-logo-fallback]")),
+      titleLogos: Array.from(document.querySelectorAll("[data-title-logo]"))
     };
   }
 
@@ -179,6 +185,39 @@ export class ScreeningApp {
     this.elements.logoFallbacks.forEach((fallback) => {
       fallback.hidden = hasCustomLogo;
     });
+  }
+
+  async prepareTitleLogo() {
+    const enabled = CONFIG.showTitleLogo && CONFIG.titleLogoPath;
+    if (!enabled) {
+      this.toggleTitleLogo(false);
+      return;
+    }
+
+    const image = await loadImage(resolvePublicAsset(CONFIG.titleLogoPath));
+    if (!image) {
+      this.toggleTitleLogo(false);
+      return;
+    }
+
+    this.elements.titleLogos.forEach((img) => {
+      img.src = image.src;
+      img.alt = CONFIG.documentaryTitle;
+      img.hidden = false;
+    });
+    this.toggleTitleLogo(true);
+  }
+
+  toggleTitleLogo(hasTitleLogo) {
+    document.querySelectorAll(".doc-title").forEach((title) => {
+      title.classList.toggle("has-title-logo", hasTitleLogo);
+    });
+    if (!hasTitleLogo) {
+      this.elements.titleLogos.forEach((img) => {
+        img.hidden = true;
+        img.removeAttribute("src");
+      });
+    }
   }
 
   async prepareDonationCard() {
@@ -287,7 +326,12 @@ export class ScreeningApp {
     this.elements.root.classList.add("is-entered");
     this.setState(STATES.SCREENING);
     this.playNow();
-    this.setVeil(true);
+    if (this.playerReady) {
+      this.revealPlayerStage();
+    } else {
+      this.setVeil(false);
+      this.showScreeningStatus();
+    }
   }
 
   async preloadPlayer() {
@@ -319,8 +363,11 @@ export class ScreeningApp {
       autoplay,
       onReady: () => {
         this.playerReady = true;
-        if (this.pendingPlay) {
+        if (this.pendingPlay || this.sessionStarted) {
           this.playNow();
+        }
+        if (this.state === STATES.SCREENING) {
+          this.revealPlayerStage();
         }
       },
       onPlaying: () => {
@@ -333,7 +380,10 @@ export class ScreeningApp {
         this.handleDocumentaryEnded();
       },
       onBuffering: () => {
-        console.info("[screening] Documentary is buffering");
+        console.info("[screening] Player is buffering or presenting an ad");
+        if (this.state === STATES.SCREENING) {
+          this.revealPlayerStage();
+        }
       },
       onError: () => {
         this.showError();
@@ -378,7 +428,9 @@ export class ScreeningApp {
       void this.ensurePlayer();
     }
 
-    this.showPlaybackCatcher();
+    if (!this.playerReady) {
+      this.showPlaybackCatcher();
+    }
     this.schedulePlayRetries();
 
     window.clearTimeout(this.playbackWatchTimer);
@@ -432,6 +484,25 @@ export class ScreeningApp {
     this.elements.playerHost = host;
   }
 
+  revealPlayerStage() {
+    this.setVeil(false);
+    this.hidePlaybackCatcher();
+    this.player?.setInteractive(true);
+    this.hideScreeningStatus();
+  }
+
+  showScreeningStatus() {
+    if (this.elements.screeningStatus) {
+      this.elements.screeningStatus.hidden = false;
+    }
+  }
+
+  hideScreeningStatus() {
+    if (this.elements.screeningStatus) {
+      this.elements.screeningStatus.hidden = true;
+    }
+  }
+
   handlePlaybackStarted() {
     this.awaitingPlayback = false;
     this.pendingPlay = false;
@@ -440,14 +511,13 @@ export class ScreeningApp {
     window.clearInterval(this.playRetryTimer);
     this.playRetryTimer = null;
     this.hideStartFilmControl();
-    this.hidePlaybackCatcher();
+    this.revealPlayerStage();
     if (
       this.state === STATES.SCREENING ||
       this.state === STATES.TRANSITION_TO_SCREENING ||
       this.state === STATES.LAUNCH
     ) {
       this.setState(STATES.SCREENING);
-      this.setVeil(false);
     }
   }
 
@@ -617,6 +687,7 @@ export class ScreeningApp {
     this.pendingPlay = false;
     this.hideStartFilmControl();
     this.hidePlaybackCatcher();
+    this.hideScreeningStatus();
     this.setState(STATES.ERROR);
     this.setVeil(false);
   }

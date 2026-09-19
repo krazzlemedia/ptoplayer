@@ -42,36 +42,6 @@
           <span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span>
         </div>
-        <svg class="ivy ivy--nw" viewBox="0 0 420 280" preserveAspectRatio="xMinYMin meet">
-          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path class="ivy-stem" d="M18 18 C70 40 90 90 78 140 C66 188 28 210 12 250" />
-            <path class="ivy-stem ivy-stem--soft" d="M78 140 C130 120 170 70 210 42" />
-            <path class="ivy-leaf" d="M78 92 C96 78 118 86 124 104 C108 108 90 108 78 92 Z" />
-            <path class="ivy-leaf" d="M118 58 C138 48 158 60 160 80 C142 78 126 72 118 58 Z" />
-            <path class="ivy-leaf" d="M46 168 C64 154 86 164 88 184 C70 184 54 180 46 168 Z" />
-          </g>
-        </svg>
-        <svg class="ivy ivy--se" viewBox="0 0 460 320" preserveAspectRatio="xMaxYMax meet">
-          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path class="ivy-stem" d="M442 302 C390 270 360 220 372 164 C386 110 430 86 450 48" />
-            <path class="ivy-stem ivy-stem--soft" d="M372 164 C320 176 270 230 230 268" />
-            <path class="ivy-leaf" d="M368 214 C350 228 328 220 322 202 C338 198 356 198 368 214 Z" />
-            <path class="ivy-leaf" d="M330 248 C310 260 290 248 288 228 C306 230 322 234 330 248 Z" />
-            <path class="ivy-leaf" d="M408 128 C390 142 368 132 364 112 C382 114 398 118 408 128 Z" />
-          </g>
-        </svg>
-        <svg class="rootwork" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet">
-          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path class="root root--primary" d="M800 930 C798 780 790 690 800 560 C808 470 758 412 718 358" />
-            <path class="root root--primary" d="M800 620 C864 556 918 496 990 424" />
-            <path class="root root--secondary" d="M800 708 C716 644 632 604 508 538" />
-            <path class="root root--secondary" d="M718 358 C676 298 646 246 604 176" />
-            <path class="root root--fine" d="M990 424 C1054 372 1140 338 1244 288" />
-            <path class="root root--fine" d="M508 538 C430 498 338 486 236 444" />
-            <path class="root root--whisper" d="M604 176 C572 124 532 84 490 36" />
-            <path class="root root--whisper" d="M800 560 C736 518 694 496 632 464" />
-          </g>
-        </svg>
         <p id="stone-legend" class="stone-legend">
           <span>People</span>
           <span>Purpose</span>
@@ -97,10 +67,13 @@
 
           <p class="presents" data-config="eventSubtitle">Presents</p>
 
-          <h1 id="launch-title" class="doc-title doc-title--launch" data-film-title>
-            <span class="doc-title__the">The</span>
-            <span class="doc-title__promise">PROMISE</span>
-            <span class="doc-title__rest">THAT TOOK ROOT</span>
+          <h1 id="launch-title" class="doc-title doc-title--launch">
+            <img class="doc-title__logo" data-title-logo alt="The Promise That Took Root" hidden />
+            <span class="doc-title__type" data-film-title>
+              <span class="doc-title__the">The</span>
+              <span class="doc-title__promise">PROMISE</span>
+              <span class="doc-title__rest">THAT TOOK ROOT</span>
+            </span>
           </h1>
 
           <p class="event-label" data-config="eventLabel">An Official Documentary Screening</p>
@@ -121,6 +94,7 @@
           <div id="yt-player" class="yt-player"></div>
         </div>
         <p id="playback-watermark" class="watermark" hidden></p>
+        <p id="screening-status" class="screening-status" hidden>Preparing the screening</p>
         <button id="playback-catcher" class="playback-catcher" type="button" hidden aria-label="Start film"></button>
         <button id="start-film" class="btn btn--primary btn--overlay" type="button" hidden>
           <span data-config="copy.startFilm">Start Film</span>
@@ -169,10 +143,13 @@
               </div>
 
               <div class="story-block">
-                <h2 class="doc-title doc-title--intermission" data-film-title>
-                  <span class="doc-title__the">The</span>
-                  <span class="doc-title__promise">PROMISE</span>
-                  <span class="doc-title__rest">THAT TOOK ROOT</span>
+                <h2 class="doc-title doc-title--intermission">
+                  <img class="doc-title__logo" data-title-logo alt="The Promise That Took Root" hidden />
+                  <span class="doc-title__type" data-film-title>
+                    <span class="doc-title__the">The</span>
+                    <span class="doc-title__promise">PROMISE</span>
+                    <span class="doc-title__rest">THAT TOOK ROOT</span>
+                  </span>
                 </h2>
                 <p id="tagline" class="tagline" data-config="optionalTagline" data-multiline>
                   <span>A legacy planted.</span>
@@ -183,7 +160,6 @@
             </div>
 
             <aside id="support-card" class="support-card" aria-labelledby="support-headline">
-              <div class="support-card__vine" aria-hidden="true"></div>
               <div class="rule-dual" aria-hidden="true"></div>
               <h2 id="support-headline" class="support-card__headline" data-config="donation.headline">
                 Support The Promise
@@ -202,7 +178,7 @@
               <a
                 id="donate-button"
                 class="btn btn--donate"
-                href="https://example.org/donate"
+                href="https://givebutter.com/2026PearlGala_40Years"
                 target="_blank"
                 rel="noopener noreferrer"
               >

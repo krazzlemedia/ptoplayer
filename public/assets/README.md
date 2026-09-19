@@ -19,6 +19,19 @@ showLogo: true,
 logoPath: "./assets/logo.png"
 ```
 
+## `title-logo.png`
+
+Official film title lockup for **The Promise That Took Root**.
+
+- Shown on the launch screen and intermission in place of the typeset title
+- If this file is missing, the player uses the typographic title treatment
+- Black backgrounds are blended out so the pink and green lettering sits on the cinematic stage
+
+```js
+showTitleLogo: true,
+titleLogoPath: "./assets/title-logo.png"
+```
+
 ## `donation-qr.png`
 
 Optional custom QR-code image for contributions.

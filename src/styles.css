@@ -200,59 +200,6 @@ a {
 .bokeh span:nth-child(7) { width: 16px; height: 16px; left: 8%; top: 84%; animation-delay: -16s; }
 .bokeh span:nth-child(8) { width: 10px; height: 10px; left: 90%; top: 28%; animation-delay: -5s; }
 
-.ivy {
-  position: absolute;
-  width: min(28vw, 380px);
-  height: auto;
-  opacity: 0.38;
-  animation: ivy-breathe 26s ease-in-out infinite alternate;
-}
-
-.ivy--nw {
-  top: 0;
-  left: 0;
-}
-
-.ivy--se {
-  right: 0;
-  bottom: 0;
-  width: min(32vw, 430px);
-  animation-delay: -8s;
-}
-
-.ivy-stem {
-  stroke: rgba(0, 173, 65, 0.55);
-  stroke-width: 1.15;
-}
-
-.ivy-stem--soft {
-  stroke: rgba(248, 135, 162, 0.42);
-  stroke-width: 0.9;
-}
-
-.ivy-leaf {
-  fill: rgba(0, 173, 65, 0.12);
-  stroke: rgba(0, 173, 65, 0.4);
-  stroke-width: 0.9;
-}
-
-.rootwork {
-  position: absolute;
-  inset: auto 0 0;
-  width: 100%;
-  height: min(70vh, 760px);
-  opacity: 0.8;
-}
-
-.root {
-  stroke-width: 1.05;
-}
-
-.root--primary { stroke: rgba(248, 135, 162, 0.34); }
-.root--secondary { stroke: rgba(0, 173, 65, 0.28); }
-.root--fine { stroke: rgba(250, 249, 246, 0.16); stroke-width: 0.75; }
-.root--whisper { stroke: rgba(248, 135, 162, 0.16); stroke-width: 0.7; }
-
 .stone-legend {
   position: absolute;
   left: 2.2vw;
@@ -478,6 +425,24 @@ a {
   line-height: 0.92;
 }
 
+.doc-title__logo {
+  width: min(52vw, 46rem);
+  height: auto;
+  mix-blend-mode: screen;
+}
+
+.doc-title--intermission .doc-title__logo {
+  width: min(32vw, 26rem);
+}
+
+.doc-title.has-title-logo .doc-title__type {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
 .doc-title--launch {
   gap: 0.18em;
 }
@@ -583,6 +548,20 @@ a {
   display: none !important;
 }
 
+.screening-status {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 6;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--white-faint);
+}
+
 .playback-catcher {
   position: absolute;
   inset: 0;
@@ -615,7 +594,6 @@ a {
   height: 100% !important;
   border: 0;
   background: #000;
-  pointer-events: none;
 }
 
 .watermark {
@@ -747,17 +725,6 @@ a {
   text-align: center;
   animation: card-in 1.3s var(--ease-cinematic) both;
   overflow: hidden;
-}
-
-.support-card__vine {
-  position: absolute;
-  right: -18px;
-  top: -16px;
-  width: 92px;
-  height: 92px;
-  background:
-    radial-gradient(circle at 70% 30%, rgba(0, 173, 65, 0.18), transparent 62%);
-  pointer-events: none;
 }
 
 .support-card .rule-dual {
@@ -1024,11 +991,6 @@ body.is-idle .fullscreen-btn {
   to { transform: translate3d(18px, -14px, 0); }
 }
 
-@keyframes ivy-breathe {
-  from { transform: translate3d(0, 0, 0); opacity: 0.32; }
-  to { transform: translate3d(6px, -8px, 0); opacity: 0.44; }
-}
-
 @keyframes dust-shift {
   from { transform: translate3d(0, 0, 0); }
   to { transform: translate3d(-4%, 3%, 0); }
@@ -1063,6 +1025,10 @@ body.is-idle .fullscreen-btn {
   .tagline {
     align-items: center;
     text-align: center;
+  }
+
+  .doc-title--intermission .doc-title__logo {
+    width: min(72vw, 26rem);
   }
 
   .support-card {
@@ -1108,10 +1074,6 @@ body.is-idle .fullscreen-btn {
   .btn {
     width: min(100%, 22rem);
     letter-spacing: 0.18em;
-  }
-
-  .ivy {
-    opacity: 0.22;
   }
 }
 
