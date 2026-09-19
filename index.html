@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#050505" />
+    <meta name="color-scheme" content="dark" />
+    <meta
+      name="description"
+      content="Official documentary screening player for The Promise That Took Root, presented by Alpha Kappa Alpha Sorority, Incorporated® — Pi Theta Omega Chapter."
+    />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>The Promise That Took Root — Pi Theta Omega Chapter</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      html,
+      body,
+      .app {
+        background: #050505;
+        margin: 0;
+        min-height: 100%;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="app" data-state="LAUNCH">
+      <div id="atmosphere" class="atmosphere" aria-hidden="true">
+        <div class="atmosphere-base"></div>
+        <div class="atmosphere-pink"></div>
+        <div class="atmosphere-green"></div>
+        <div class="bokeh">
+          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <svg class="ivy ivy--nw" viewBox="0 0 420 280" preserveAspectRatio="xMinYMin meet">
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path class="ivy-stem" d="M18 18 C70 40 90 90 78 140 C66 188 28 210 12 250" />
+            <path class="ivy-stem ivy-stem--soft" d="M78 140 C130 120 170 70 210 42" />
+            <path class="ivy-leaf" d="M78 92 C96 78 118 86 124 104 C108 108 90 108 78 92 Z" />
+            <path class="ivy-leaf" d="M118 58 C138 48 158 60 160 80 C142 78 126 72 118 58 Z" />
+            <path class="ivy-leaf" d="M46 168 C64 154 86 164 88 184 C70 184 54 180 46 168 Z" />
+          </g>
+        </svg>
+        <svg class="ivy ivy--se" viewBox="0 0 460 320" preserveAspectRatio="xMaxYMax meet">
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path class="ivy-stem" d="M442 302 C390 270 360 220 372 164 C386 110 430 86 450 48" />
+            <path class="ivy-stem ivy-stem--soft" d="M372 164 C320 176 270 230 230 268" />
+            <path class="ivy-leaf" d="M368 214 C350 228 328 220 322 202 C338 198 356 198 368 214 Z" />
+            <path class="ivy-leaf" d="M330 248 C310 260 290 248 288 228 C306 230 322 234 330 248 Z" />
+            <path class="ivy-leaf" d="M408 128 C390 142 368 132 364 112 C382 114 398 118 408 128 Z" />
+          </g>
+        </svg>
+        <svg class="rootwork" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet">
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path class="root root--primary" d="M800 930 C798 780 790 690 800 560 C808 470 758 412 718 358" />
+            <path class="root root--primary" d="M800 620 C864 556 918 496 990 424" />
+            <path class="root root--secondary" d="M800 708 C716 644 632 604 508 538" />
+            <path class="root root--secondary" d="M718 358 C676 298 646 246 604 176" />
+            <path class="root root--fine" d="M990 424 C1054 372 1140 338 1244 288" />
+            <path class="root root--fine" d="M508 538 C430 498 338 486 236 444" />
+            <path class="root root--whisper" d="M604 176 C572 124 532 84 490 36" />
+            <path class="root root--whisper" d="M800 560 C736 518 694 496 632 464" />
+          </g>
+        </svg>
+        <p id="stone-legend" class="stone-legend">
+          <span>People</span>
+          <span>Purpose</span>
+          <span>Progress</span>
+          <span>Together</span>
+        </p>
+        <div class="dust"></div>
+        <div class="grain"></div>
+      </div>
+
+      <section id="launch" class="screen screen--launch" aria-labelledby="launch-title">
+        <div class="launch-frame">
+          <div class="brand-block">
+            <div class="brand-mark">
+              <img data-logo alt="" hidden />
+              <p class="wordmark" data-logo-fallback>Pi Theta Omega</p>
+            </div>
+            <p class="eyebrow" data-config="organizationName">
+              Alpha Kappa Alpha Sorority, Incorporated®
+            </p>
+            <p class="chapter" data-config="chapterName">Pi Theta Omega Chapter</p>
+            <div class="rule-dual" aria-hidden="true"></div>
+          </div>
+
+          <p class="presents" data-config="eventSubtitle">Presents</p>
+
+          <h1 id="launch-title" class="doc-title doc-title--launch" data-film-title>
+            <span class="doc-title__the">The</span>
+            <span class="doc-title__promise">PROMISE</span>
+            <span class="doc-title__rest">THAT TOOK ROOT</span>
+          </h1>
+
+          <p class="event-label" data-config="eventLabel">An Official Documentary Screening</p>
+
+          <button id="enter-screening" class="btn btn--primary" type="button">
+            <span data-config="copy.enterScreening">Enter Screening</span>
+          </button>
+        </div>
+      </section>
+
+      <section
+        id="screening"
+        class="screen screen--screening"
+        aria-label="Documentary screening"
+        aria-hidden="true"
+      >
+        <div id="player-stage" class="player-stage">
+          <div id="yt-player" class="yt-player"></div>
+        </div>
+        <p id="playback-watermark" class="watermark" hidden></p>
+        <button id="start-film" class="btn btn--primary btn--overlay" type="button" hidden>
+          <span data-config="copy.startFilm">Start Film</span>
+        </button>
+      </section>
+
+      <section
+        id="intermission"
+        class="screen screen--intermission"
+        aria-labelledby="next-screening-label"
+        aria-hidden="true"
+      >
+        <div class="intermission-stage">
+          <div class="intermission-body">
+            <div class="intermission-main">
+              <header class="intermission-header">
+                <div class="brand-mark brand-mark--small">
+                  <img data-logo alt="" hidden />
+                </div>
+                <p class="eyebrow" data-config="organizationName">
+                  Alpha Kappa Alpha Sorority, Incorporated®
+                </p>
+                <p class="chapter" data-config="chapterName">Pi Theta Omega Chapter</p>
+                <div class="rule-dual" aria-hidden="true"></div>
+                <p class="pillars" data-config="pillars">
+                  Legacy  |  Service  |  Sisterhood  |  Impact
+                </p>
+              </header>
+
+              <div class="next-block">
+                <p id="next-screening-label" class="next-label" data-config="copy.nextScreening">
+                  Next Screening
+                </p>
+                <p id="countdown" class="countdown">
+                  <span class="countdown-min" data-countdown-minutes>05</span>
+                  <span class="countdown-sep" data-countdown-separator>:</span>
+                  <span class="countdown-sec" data-countdown-seconds>00</span>
+                </p>
+                <p id="countdown-status" class="sr-only" aria-live="polite"></p>
+                <p id="continue-copy" class="continue-copy" data-config="copy.continueIn">
+                  The Promise continues in
+                </p>
+                <p id="imminent-copy" class="imminent-copy" data-config="copy.beginningShortly" hidden>
+                  Screening beginning shortly
+                </p>
+              </div>
+
+              <div class="story-block">
+                <h2 class="doc-title doc-title--intermission" data-film-title>
+                  <span class="doc-title__the">The</span>
+                  <span class="doc-title__promise">PROMISE</span>
+                  <span class="doc-title__rest">THAT TOOK ROOT</span>
+                </h2>
+                <p id="tagline" class="tagline" data-config="optionalTagline" data-multiline>
+                  <span>A legacy planted.</span>
+                  <span>A promise nurtured.</span>
+                  <span>A brighter tomorrow.</span>
+                </p>
+              </div>
+            </div>
+
+            <aside id="support-card" class="support-card" aria-labelledby="support-headline">
+              <div class="support-card__vine" aria-hidden="true"></div>
+              <div class="rule-dual" aria-hidden="true"></div>
+              <h2 id="support-headline" class="support-card__headline" data-config="donation.headline">
+                Support The Promise
+              </h2>
+              <p class="support-card__copy" data-config="donation.description">
+                Help us continue the work, preserve the story, and support the mission behind The
+                Promise That Took Root.
+              </p>
+              <div class="qr-plate">
+                <div id="qr-mount" class="qr-mount"></div>
+              </div>
+              <p class="qr-caption">
+                <span class="qr-arrow" aria-hidden="true"></span>
+                <span data-config="donation.scanLabel">Scan to Support</span>
+              </p>
+              <a
+                id="donate-button"
+                class="btn btn--donate"
+                href="https://example.org/donate"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span data-config="donation.ctaLabel">Support The Promise</span>
+              </a>
+              <ul class="impact-list">
+                <li>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6 4.5h9.5A2.5 2.5 0 0 1 18 7v13H8.2A2.2 2.2 0 0 1 6 17.8V4.5Z" fill="none" stroke="currentColor" stroke-width="1.3"/>
+                    <path d="M6 17.8c0-1.2 1-2.2 2.2-2.2H18" fill="none" stroke="currentColor" stroke-width="1.3"/>
+                  </svg>
+                  <span>Preserve Stories</span>
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="8" cy="9" r="2.1" fill="none" stroke="currentColor" stroke-width="1.3"/>
+                    <circle cx="16" cy="9" r="2.1" fill="none" stroke="currentColor" stroke-width="1.3"/>
+                    <path d="M4.8 18c.4-2.4 2.3-3.8 4.4-3.8h.4c1.2 0 2.3.5 3.1 1.3M12.8 15.5c.8-.7 1.9-1.2 3.1-1.2h.3c2.1 0 4 1.4 4.4 3.7" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                  </svg>
+                  <span>Empower Communities</span>
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 19.5V11M12 11c-2.4-1.8-4.8-1.2-6.2.4C7.2 8.4 10 8 12 9.4M12 11c2.4-1.8 4.8-1.2 6.2.4C16.8 8.4 14 8 12 9.4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                    <path d="M8.5 19.5h7" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                  </svg>
+                  <span>Invest in Tomorrow</span>
+                </li>
+              </ul>
+            </aside>
+          </div>
+
+          <footer class="intermission-footer">
+            <p class="footer-left" data-config="footerLeft">
+              Scholarship   |   Service   |   Sisterhood   |   Social Justice
+            </p>
+            <p class="footer-right" data-config="footerRight">
+              In service to a brighter tomorrow
+            </p>
+          </footer>
+        </div>
+      </section>
+
+      <section
+        id="error"
+        class="screen screen--error"
+        aria-labelledby="error-title"
+        aria-hidden="true"
+      >
+        <div class="error-frame">
+          <p class="eyebrow" data-config="chapterName">Pi Theta Omega Chapter</p>
+          <div class="rule-dual" aria-hidden="true"></div>
+          <h2 id="error-title" data-config="copy.errorTitle">Screening Temporarily Unavailable</h2>
+          <p data-config="copy.errorMessage">
+            Please check the video connection and refresh the screening player.
+          </p>
+          <button id="retry-screening" class="btn btn--primary" type="button">
+            <span data-config="copy.retry">Retry</span>
+          </button>
+        </div>
+      </section>
+
+      <div id="veil" class="veil" aria-hidden="true"></div>
+
+      <button
+        id="fullscreen-toggle"
+        class="fullscreen-btn"
+        type="button"
+        aria-label="Enter fullscreen"
+        aria-pressed="false"
+      >
+        <svg class="icon-expand" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M8 3H4v4M16 3h4v4M8 21H4v-4M16 21h4v-4"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <svg class="icon-collapse" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
