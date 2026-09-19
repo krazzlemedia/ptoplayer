@@ -15,7 +15,7 @@ export const CONFIG = {
    *   https://www.youtube.com/embed/VIDEO_ID
    *   A raw 11-character video ID
    */
-  youtubeUrl: "https://www.youtube.com/watch?v=REPLACE_ME",
+  youtubeUrl: "https://www.youtube.com/watch?v=tYZi9ugG7Gk",
 
   documentaryTitle: "The Promise That Took Root",
 
