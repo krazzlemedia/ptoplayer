@@ -75,6 +75,7 @@ export const PlayerState = {
 export function createYouTubeController({
   hostId,
   videoId,
+  autoplay = 0,
   onReady,
   onPlaying,
   onPaused,
@@ -84,9 +85,11 @@ export function createYouTubeController({
 }) {
   let player = null;
   let destroyed = false;
+  let ready = false;
 
   const playerVars = {
-    autoplay: 1,
+    autoplay: autoplay ? 1 : 0,
+    mute: 0,
     controls: 0,
     disablekb: 1,
     fs: 0,
@@ -110,6 +113,7 @@ export function createYouTubeController({
         if (destroyed) {
           return;
         }
+        ready = true;
         hardenIframe(event.target);
         if (typeof onReady === "function") {
           onReady(event.target);
@@ -223,6 +227,9 @@ export function createYouTubeController({
     },
     isPaused() {
       return this.getState() === PlayerState.PAUSED;
+    },
+    isReady() {
+      return ready && !destroyed;
     },
     destroy() {
       destroyed = true;

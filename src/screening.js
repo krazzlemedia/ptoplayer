@@ -52,7 +52,10 @@ export class ScreeningApp {
     this.countdownTimer = null;
     this.idleTimer = null;
     this.playbackWatchTimer = null;
+    this.playRetryTimer = null;
     this.lastAnnouncedMark = null;
+    this.pendingPlay = false;
+    this.playerReady = false;
     this.elements = {};
   }
 
@@ -60,9 +63,10 @@ export class ScreeningApp {
     this.cacheElements();
     this.bindConfig();
     this.bindEvents();
-    await Promise.all([this.prepareLogo(), this.prepareDonationCard()]);
     this.setState(STATES.LAUNCH);
     this.updateFullscreenButton();
+    void this.preloadPlayer();
+    await Promise.all([this.prepareLogo(), this.prepareDonationCard()]);
     this.applyPreviewMode();
   }
 
@@ -77,6 +81,7 @@ export class ScreeningApp {
       veil: document.getElementById("veil"),
       atmosphere: document.getElementById("atmosphere"),
       enterButton: document.getElementById("enter-screening"),
+      playbackCatcher: document.getElementById("playback-catcher"),
       startFilmButton: document.getElementById("start-film"),
       fullscreenButton: document.getElementById("fullscreen-toggle"),
       retryButton: document.getElementById("retry-screening"),
@@ -189,7 +194,17 @@ export class ScreeningApp {
     });
 
     this.elements.startFilmButton?.addEventListener("click", () => {
-      this.attemptPlayback({ userInitiated: true });
+      this.playNow();
+    });
+
+    this.elements.playbackCatcher?.addEventListener("click", () => {
+      this.playNow();
+    });
+
+    this.elements.screening?.addEventListener("click", () => {
+      if (this.state === STATES.SCREENING && !this.player?.isPlaying()) {
+        this.playNow();
+      }
     });
 
     this.elements.retryButton?.addEventListener("click", () => {
@@ -255,24 +270,75 @@ export class ScreeningApp {
     }
   }
 
-  async enterScreening() {
+  enterScreening() {
     if (this.sessionStarted || this.state !== STATES.LAUNCH) {
       return;
     }
 
     this.sessionStarted = true;
+    this.pendingPlay = true;
     setHidden(this.elements.enterButton, true);
 
     if (!this.fullscreenRequested) {
       this.fullscreenRequested = true;
-      await requestAppFullscreen();
+      void requestAppFullscreen();
     }
 
     this.elements.root.classList.add("is-entered");
-    this.setVeil(true);
-    await wait(prefersReducedMotion() ? 0 : 720);
     this.setState(STATES.SCREENING);
-    await this.ensurePlayer();
+    this.playNow();
+    this.setVeil(true);
+  }
+
+  async preloadPlayer() {
+    this.videoId = extractYouTubeId(CONFIG.youtubeUrl);
+    if (!this.videoId) {
+      console.warn(
+        "[screening] Invalid YouTube URL. Update youtubeUrl in src/config.js.",
+        CONFIG.youtubeUrl
+      );
+      return;
+    }
+
+    try {
+      await loadYouTubeAPI();
+      if (this.player) {
+        return;
+      }
+      this.rebuildPlayerHost();
+      this.player = this.createPlayer(this.videoId, { autoplay: 0 });
+    } catch (error) {
+      console.error("[screening] Failed to preload YouTube player", error);
+    }
+  }
+
+  createPlayer(videoId, { autoplay = 0 } = {}) {
+    return createYouTubeController({
+      hostId: "yt-player",
+      videoId,
+      autoplay,
+      onReady: () => {
+        this.playerReady = true;
+        if (this.pendingPlay) {
+          this.playNow();
+        }
+      },
+      onPlaying: () => {
+        this.handlePlaybackStarted();
+      },
+      onPaused: () => {
+        this.handlePlaybackPaused();
+      },
+      onEnded: () => {
+        this.handleDocumentaryEnded();
+      },
+      onBuffering: () => {
+        console.info("[screening] Documentary is buffering");
+      },
+      onError: () => {
+        this.showError();
+      }
+    });
   }
 
   async ensurePlayer() {
@@ -291,35 +357,66 @@ export class ScreeningApp {
       if (!this.player) {
         await loadYouTubeAPI();
         this.rebuildPlayerHost();
-        this.player = createYouTubeController({
-          hostId: "yt-player",
-          videoId: this.videoId,
-          onReady: () => {
-            this.attemptPlayback({ userInitiated: true });
-          },
-          onPlaying: () => {
-            this.handlePlaybackStarted();
-          },
-          onPaused: () => {
-            this.handlePlaybackPaused();
-          },
-          onEnded: () => {
-            this.handleDocumentaryEnded();
-          },
-          onBuffering: () => {
-            console.info("[screening] Documentary is buffering");
-          },
-          onError: () => {
-            this.showError();
-          }
-        });
-      } else {
-        this.attemptPlayback({ userInitiated: true });
+        this.player = this.createPlayer(this.videoId, { autoplay: 1 });
       }
+      this.playNow();
     } catch (error) {
       console.error("[screening] Failed to initialize YouTube player", error);
       this.showError();
     }
+  }
+
+  playNow() {
+    this.pendingPlay = true;
+    this.awaitingPlayback = true;
+    this.intentionallyPaused = false;
+
+    if (this.player) {
+      this.player.unmute();
+      this.player.play();
+    } else {
+      void this.ensurePlayer();
+    }
+
+    this.showPlaybackCatcher();
+    this.schedulePlayRetries();
+
+    window.clearTimeout(this.playbackWatchTimer);
+    this.playbackWatchTimer = window.setTimeout(() => {
+      if (!this.awaitingPlayback) {
+        return;
+      }
+      if (this.player?.isPlaying()) {
+        this.handlePlaybackStarted();
+        return;
+      }
+      const playerState = this.player?.getState();
+      if (playerState === PlayerState.BUFFERING) {
+        return;
+      }
+      if (this.state === STATES.SCREENING) {
+        this.showPlaybackCatcher();
+      }
+    }, PLAYBACK_GRACE_MS);
+  }
+
+  schedulePlayRetries() {
+    window.clearInterval(this.playRetryTimer);
+    let attempts = 0;
+    this.playRetryTimer = window.setInterval(() => {
+      attempts += 1;
+      if (!this.pendingPlay || this.player?.isPlaying() || this.state !== STATES.SCREENING) {
+        window.clearInterval(this.playRetryTimer);
+        this.playRetryTimer = null;
+        return;
+      }
+      this.player?.unmute();
+      this.player?.play();
+      if (attempts >= 15) {
+        window.clearInterval(this.playRetryTimer);
+        this.playRetryTimer = null;
+      }
+    }, 200);
   }
 
   rebuildPlayerHost() {
@@ -335,36 +432,15 @@ export class ScreeningApp {
     this.elements.playerHost = host;
   }
 
-  attemptPlayback({ userInitiated = false } = {}) {
-    if (!this.player) {
-      return;
-    }
-
-    this.awaitingPlayback = true;
-    this.intentionallyPaused = false;
-    this.player.unmute();
-    this.player.play();
-
-    window.clearTimeout(this.playbackWatchTimer);
-    this.playbackWatchTimer = window.setTimeout(() => {
-      if (!this.awaitingPlayback) {
-        return;
-      }
-      if (this.player?.isPlaying()) {
-        this.handlePlaybackStarted();
-        return;
-      }
-      if (userInitiated || this.state === STATES.SCREENING) {
-        this.showStartFilmControl();
-      }
-    }, PLAYBACK_GRACE_MS);
-  }
-
   handlePlaybackStarted() {
     this.awaitingPlayback = false;
+    this.pendingPlay = false;
     this.intentionallyPaused = false;
     window.clearTimeout(this.playbackWatchTimer);
+    window.clearInterval(this.playRetryTimer);
+    this.playRetryTimer = null;
     this.hideStartFilmControl();
+    this.hidePlaybackCatcher();
     if (
       this.state === STATES.SCREENING ||
       this.state === STATES.TRANSITION_TO_SCREENING ||
@@ -415,8 +491,8 @@ export class ScreeningApp {
     this.player?.stop();
 
     await wait(immediate ? 0 : BLACK_HOLD_MS + 900);
-    this.startCountdown();
     this.setState(STATES.INTERMISSION);
+    this.startCountdown();
     this.setVeil(false);
   }
 
@@ -430,7 +506,10 @@ export class ScreeningApp {
   }
 
   tickCountdown() {
-    if (this.state !== STATES.INTERMISSION) {
+    if (
+      this.state !== STATES.INTERMISSION &&
+      this.state !== STATES.TRANSITION_TO_INTERMISSION
+    ) {
       return;
     }
 
@@ -518,7 +597,7 @@ export class ScreeningApp {
 
     this.setState(STATES.SCREENING);
     this.player.restart();
-    this.attemptPlayback({ userInitiated: false });
+    this.playNow();
   }
 
   async retryScreening() {
@@ -526,29 +605,44 @@ export class ScreeningApp {
     if (this.player) {
       this.player.destroy();
       this.player = null;
+      this.playerReady = false;
     }
+    this.pendingPlay = true;
     this.setState(STATES.SCREENING);
     await this.ensurePlayer();
   }
 
   showError() {
     this.clearCountdown();
+    this.pendingPlay = false;
     this.hideStartFilmControl();
+    this.hidePlaybackCatcher();
     this.setState(STATES.ERROR);
     this.setVeil(false);
   }
 
   showStartFilmControl() {
-    if (!this.elements.startFilmButton) {
-      return;
+    this.showPlaybackCatcher();
+    if (this.elements.startFilmButton) {
+      this.elements.startFilmButton.hidden = true;
     }
-    this.elements.startFilmButton.hidden = false;
-    this.elements.startFilmButton.focus({ preventScroll: true });
   }
 
   hideStartFilmControl() {
     if (this.elements.startFilmButton) {
       this.elements.startFilmButton.hidden = true;
+    }
+  }
+
+  showPlaybackCatcher() {
+    if (this.elements.playbackCatcher) {
+      this.elements.playbackCatcher.hidden = false;
+    }
+  }
+
+  hidePlaybackCatcher() {
+    if (this.elements.playbackCatcher) {
+      this.elements.playbackCatcher.hidden = true;
     }
   }
 
@@ -598,7 +692,7 @@ export class ScreeningApp {
     ) {
       const state = this.player.getState();
       if (state === PlayerState.PAUSED || state === PlayerState.CUED) {
-        this.attemptPlayback();
+        this.playNow();
       }
     }
   }
@@ -632,7 +726,7 @@ export class ScreeningApp {
           this.intentionallyPaused = true;
           this.player.pause();
         } else {
-          this.attemptPlayback({ userInitiated: true });
+          this.playNow();
         }
       }
       return;
